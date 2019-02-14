@@ -1,62 +1,61 @@
+#' @param exp.nr numbarical experiment number
+#' @param gender string denoting gender ( "Male", "Female" or "Unknown")
+#' @param snpm.data dataframe containing snp data ( "Chr", "Position", "B Allele Freq")
+#' @param deviations dataframe containing deviations( "Chromosome Region"	"Event"	"Length"	"Cytoband"	"% of CNV Overlap"	"Probe Median"	"% Heterozygous"	"Probes"	"Count of Gene Symbols")
+#'
 #Versionnumber: 0.6.0.0
-MosaicCalculator <- function(a){
+MosaicCalculator <- function(exp.nr, gender, snpm.data, deviations){
   #Set the option of the output decimal to comma
   options(OutDec = ",")
 
   #Building of EXP-n number and path to SNPanalysis Experiments
-  EXPnumber <- paste("EXP-",a,sep = "")
-  NexusAnalysesPath <- "I:/SNPanalyse/NexusAnalyses/Experiments/"
+  EXPnumber <- paste("EXP-",exp.nr,sep = "")
+  #exp.files.path <- "I:/SNPanalyse/NexusAnalyses/Experiments/"
   cat("Dank u voor het kiezen van Mozaiek Bereken Tool, ontwikkeld door Robert Sietsma","\n")
-  cat("Zoeken naar bestanden.","\n")
+  #cat("Zoeken naar bestanden.","\n")
 
-  #Search EXPnumber in path "I:/SNPanalyse/NexusAnalyses/Experiments/
-  MatchEXP <- list.files(NexusAnalysesPath, EXPnumber)
+  #Search EXPnumber in exp.files.path location
+  #MatchEXP <- list.files(exp.files.path, EXPnumber)
 
   #Saving of folder name for critical information
-  TXTName <- strsplit(MatchEXP, "_")[[1]][1:4]
-
-  #Saving of gender
-  gender <- TXTName[4]
+  #TXTName <- strsplit(MatchEXP, "_")[[1]][1:4]
 
   #Making of the PDF output directory and filename (for the histograms of all deviations)
-  outputdir <- paste("~/.MBTOutputPDF/",TXTName[1], "_", TXTName[2],"_",TXTName[3], "_", TXTName[4],"/", sep = "")
-  outputname <- paste(TXTName[1], "_", TXTName[2],"_",TXTName[3], "_", TXTName[4],".pdf",sep = "")
+  outputdir <- "~/rout"
+  outputname <- "result.pdf"
 
   #Make the outputdir directory if it doesn't exist
-  if(!dir.exists("~/.MBTOutputPDF/")){
-    dir.create("~/.MBTOutputPDF")
-  }
   if(!dir.exists(outputdir)){
     dir.create(outputdir)
   }
 
 
   #Combinating of critical information for the SNP-array file
-  TXTName <- paste(TXTName[1], "_", TXTName[2],"_",TXTName[3], "_", TXTName[4], ".txt", sep = "")
+  #TXTName <- paste(TXTName[1], "_", TXTName[2],"_",TXTName[3], "_", TXTName[4], ".txt", sep = "")
 
   #Search for "events.txt" in MatchEXP path, if 2 hits occur, search for "copy_events.txt"
-  eventstxt <- list.files(paste(NexusAnalysesPath, MatchEXP, sep = ""), "events.txt")
-  if(length(eventstxt) > 1){
+  #eventstxt <- list.files(paste(exp.files.path, MatchEXP, sep = ""), "events.txt")
+  #if(length(eventstxt) > 1){
     #Save the very first copy_events hit (in case of copy_events and copy copy_events, copy copy_events gets used)
-    eventstxt <- list.files(paste(NexusAnalysesPath, MatchEXP, sep = ""), "copy_events.txt")[1]
-  }
+   # eventstxt <- list.files(paste(exp.files.path, MatchEXP, sep = ""), "copy_events.txt")[1]
+  #}
 
   #The making of the path to: (copy_)events.txt and the SNP-array data
-  path <- paste(NexusAnalysesPath, MatchEXP, "/", TXTName, sep = "")
-  nexus <- paste(NexusAnalysesPath, MatchEXP, "/", eventstxt, sep = "")
+  #path <- paste(exp.files.path, MatchEXP, "/", TXTName, sep = "")
+ # nexus <- paste(exp.files.path, MatchEXP, "/", eventstxt, sep = "")
   cat("Bestanden gevonden.","\n")
   cat("Inlezen van bestanden, een ogenblik geduld alstublieft...","\n")
 
   #Reading of SNP-array file and (copy_)events.txt
   #In the SNP-array file only column 3,4 and 6 are of interest
-  df <- read.table(path, skip = 9, header = T, sep = "\t")[,c(3,4,6)]
-  deviations <- read.table(nexus, header = T, sep = "\t")
+  #snpm.data <- read.table(path, skip = 9, header = T, sep = "\t")[,c(3,4,6)]
+  #deviations <- read.table(nexus, header = T, sep = "\t")
 
   #The removal of variables that are not used anymore
-  remove( path, nexus, TXTName, MatchEXP, NexusAnalysesPath, EXPnumber)
+  #remove( path, nexus, TXTName, MatchEXP, exp.files.path, EXPnumber)
 
   cat("Bestanden ingeladen.","\n")
-  cat("Ombouwen van ",eventstxt," naar bruikbare parameters.","\n")
+  #cat("Ombouwen van ",eventstxt," naar bruikbare parameters.","\n")
 
   #Function to rebuild (copy_)events.txt to usefull information
   events <- function(x){
@@ -129,7 +128,7 @@ MosaicCalculator <- function(a){
   maxbaf <- c(1,0.9)
 
   #Calculating average BAF outside of any event (within 0.2-0.8 BAF range)
-  averageBAF <- df[with(df, B.Allele.Freq >= 0.2 & B.Allele.Freq <= 0.8),]
+  averageBAF <- snpm.data[with(snpm.data, B.Allele.Freq >= 0.2 & B.Allele.Freq <= 0.8),]
   #Calculating over all heterozygous BAF areas
   if(gender == "Female"){
     averageBAF[averageBAF$Chr %in% c("Y","0","MT"),] <- NA
@@ -167,9 +166,9 @@ MosaicCalculator <- function(a){
   correctionfactor <- 0.5/mean(averageBAF$B.Allele.Freq)
 
   #Making of array specific quality parameters
-  percentageofSNPs <- round((nrow(averageBAF)/nrow(df))*100, digits = 2)
+  percentageofSNPs <- round((nrow(averageBAF)/nrow(snpm.data))*100, digits = 2)
   meanaverageBAF <- paste(round(mean(averageBAF$B.Allele.Freq), digits = 4), sep = "")
-  SNPs_used_in_averageBAF <- paste("[",formatC(nrow(averageBAF), big.mark = "."),"/",formatC(nrow(df), big.mark = "."),"][",percentageofSNPs,"%]", sep = "")
+  SNPs_used_in_averageBAF <- paste("[",formatC(nrow(averageBAF), big.mark = "."),"/",formatC(nrow(snpm.data), big.mark = "."),"][",percentageofSNPs,"%]", sep = "")
   sdaverageBAF <- round(sd(averageBAF$B.Allele.Freq), digits = 4)
   MADaverageBAF <- round(mad(x = averageBAF$B.Allele.Freq, center = 0.5), digits = 4)
   remove(averageBAF)
@@ -233,7 +232,7 @@ MosaicCalculator <- function(a){
     }
     else{
       #Manipulating the SNP-array file to only contain the matching chromosome.
-      df1 <- df[df$Chr == chr,]
+      df1 <- snpm.data[snpm.data$Chr == chr,]
       df1 <- df1[complete.cases(df1),]
 
       #Filtering the SNP-array file to contain the SNPs that are within range of start and stop
