@@ -4,8 +4,8 @@ Title: Mosaic Calculator
 Version: 0.1.0
 Authors@R: as.person(c(
     "Robert Jarik Sietsma [aut]", 
-    "Connor Stroomberg <c.stroomberg@rug.nl> [cre]"
-    "Mariska Slofstra <m.k.slofstra@umcg.nl> [cre]"
+    "Connor Stroomberg <c.stroomberg@rug.nl> [cre]",
+    "Mariska Slofstra <m.k.slofstra@umcg.nl> [aut]"
   ))
 Maintainer: Connor Stroomberg <c.stroomberg@rug.nl>
 Description: More about what it does (maybe more than one line)
