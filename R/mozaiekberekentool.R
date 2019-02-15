@@ -1,7 +1,16 @@
+#' Calculate mosaic percentage
+#'
+#' Takes a experiment number, gender, snp dataframe and events dataframe
+#' and calculates the percentage of mosaic dna
 #' @param exp.nr numbarical experiment number
-#' @param gender string denoting gender ( "Male", "Female" or "Unknown")
-#' @param snpm.data dataframe containing snp data ( "Chr", "Position", "B Allele Freq")
-#' @param deviations dataframe containing deviations( "Chromosome Region"	"Event"	"Length"	"Cytoband"	"% of CNV Overlap"	"Probe Median"	"% Heterozygous"	"Probes"	"Count of Gene Symbols")
+#' @param gender string denoting gender
+#'  ( "Male", "Female" or "Unknown")
+#' @param snpm.data dataframe containing snp data
+#'  ( "Chr", "Position", "B Allele Freq")
+#' @param deviations dataframe containing deviations
+#' ( "Chromosome Region",	"Event",	"Length",	"Cytoband",	"% of CNV Overlap",
+#' 	"Probe Median",	"% Heterozygous",	"Probes",	"Count of Gene Symbols")
+#' 	@export
 #'
 #Versionnumber: 0.6.0.0
 MosaicCalculator <- function(exp.nr, gender, snpm.data, deviations){
@@ -10,15 +19,8 @@ MosaicCalculator <- function(exp.nr, gender, snpm.data, deviations){
 
   #Building of EXP-n number and path to SNPanalysis Experiments
   EXPnumber <- paste("EXP-",exp.nr,sep = "")
-  #exp.files.path <- "I:/SNPanalyse/NexusAnalyses/Experiments/"
+
   cat("Dank u voor het kiezen van Mozaiek Bereken Tool, ontwikkeld door Robert Sietsma","\n")
-  #cat("Zoeken naar bestanden.","\n")
-
-  #Search EXPnumber in exp.files.path location
-  #MatchEXP <- list.files(exp.files.path, EXPnumber)
-
-  #Saving of folder name for critical information
-  #TXTName <- strsplit(MatchEXP, "_")[[1]][1:4]
 
   #Making of the PDF output directory and filename (for the histograms of all deviations)
   outputdir <- "~/rout"
@@ -30,34 +32,8 @@ MosaicCalculator <- function(exp.nr, gender, snpm.data, deviations){
   }
 
 
-  #Combinating of critical information for the SNP-array file
-  #TXTName <- paste(TXTName[1], "_", TXTName[2],"_",TXTName[3], "_", TXTName[4], ".txt", sep = "")
-
-  #Search for "events.txt" in MatchEXP path, if 2 hits occur, search for "copy_events.txt"
-  #eventstxt <- list.files(paste(exp.files.path, MatchEXP, sep = ""), "events.txt")
-  #if(length(eventstxt) > 1){
-    #Save the very first copy_events hit (in case of copy_events and copy copy_events, copy copy_events gets used)
-   # eventstxt <- list.files(paste(exp.files.path, MatchEXP, sep = ""), "copy_events.txt")[1]
-  #}
-
-  #The making of the path to: (copy_)events.txt and the SNP-array data
-  #path <- paste(exp.files.path, MatchEXP, "/", TXTName, sep = "")
- # nexus <- paste(exp.files.path, MatchEXP, "/", eventstxt, sep = "")
-  cat("Bestanden gevonden.","\n")
-  cat("Inlezen van bestanden, een ogenblik geduld alstublieft...","\n")
-
-  #Reading of SNP-array file and (copy_)events.txt
-  #In the SNP-array file only column 3,4 and 6 are of interest
-  #snpm.data <- read.table(path, skip = 9, header = T, sep = "\t")[,c(3,4,6)]
-  #deviations <- read.table(nexus, header = T, sep = "\t")
-
-  #The removal of variables that are not used anymore
-  #remove( path, nexus, TXTName, MatchEXP, exp.files.path, EXPnumber)
-
-  cat("Bestanden ingeladen.","\n")
-  #cat("Ombouwen van ",eventstxt," naar bruikbare parameters.","\n")
-
-  #Function to rebuild (copy_)events.txt to usefull information
+  cat("Ombouwen van deviations naar bruikbare parameters.","\n")
+  #Function to rebuild deviations to usefull information
   events <- function(x){
     #Selection of usefull information
     events <- cbind(x[,1:3],x$Probes)
@@ -111,7 +87,6 @@ MosaicCalculator <- function(exp.nr, gender, snpm.data, deviations){
   eventsoutput <- events(deviations)
 
   cat("Berekenen van kwaliteit aspecten array.","\n")
-
 
   #The build of an outlier removal function through quantiles
   remove_outliers <- function(x, na.rm = TRUE, ...) {

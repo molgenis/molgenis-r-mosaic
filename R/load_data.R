@@ -11,6 +11,7 @@ run.demo <- function() {
   cat("Select snp data","\n")
   snp.file <- file.choose()
   cat("Read snp data","\n")
+  #In the SNP-array file only column 3,4 and 6 are of interest
   snpm.data <- read.table(snp.file, skip = 9, header = T, sep = "\t")[,c(3,4,6)]
 
   cat("Select snp data","\n")
