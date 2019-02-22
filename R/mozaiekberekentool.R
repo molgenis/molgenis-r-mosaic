@@ -130,4 +130,3 @@ MosaicCalculator <- function(exp.nr, gender, snpm.data, deviations){
   #Returning the final dataframe
   return(eventsfilter)
 }
-suppressMessages(  while (!is.null(dev.list()))  dev.off())
