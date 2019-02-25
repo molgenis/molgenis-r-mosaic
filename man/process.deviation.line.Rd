@@ -4,7 +4,13 @@
 \alias{process.deviation.line}
 \title{Function to rebuild deviations to usefull information}
 \usage{
-process.deviation.line(x)
+process.deviation.line(x, gender)
+}
+\arguments{
+\item{x}{line containing raw the deviation event}
+
+\item{gender}{string denoting gender
+( "Male", "Female" or "Unknown")}
 }
 \description{
 Function to rebuild deviations to usefull information

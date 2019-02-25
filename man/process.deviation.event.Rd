@@ -4,7 +4,17 @@
 \alias{process.deviation.event}
 \title{Main deviation.event processing fuction}
 \usage{
-process.deviation.event(x, snpm.data, correctionfactor)
+process.deviation.event(x, snpm.data, correctionfactor, gender)
+}
+\arguments{
+\item{x}{row containing the deviation event}
+
+\item{snpm.data}{dataframe containing the BAF's}
+
+\item{correctionfactor}{number used in proceing the event}
+
+\item{gender}{string denoting gender
+( "Male", "Female" or "Unknown")}
 }
 \description{
 Main deviation.event processing fuction

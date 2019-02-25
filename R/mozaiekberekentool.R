@@ -1,39 +1,38 @@
 #' Calculate mosaic percentage
-#'
+#' 
 #' Takes a experiment number, gender, snp dataframe and events dataframe
 #' and calculates the percentage of mosaic dna
+#' 
 #' @param exp.nr numbarical experiment number
 #' @param gender string denoting gender
 #'  ( "Male", "Female" or "Unknown")
 #' @param snpm.data dataframe containing snp data
 #'  ( "Chr", "Position", "B Allele Freq")
 #' @param deviations dataframe containing deviations
-#' ( "Chromosome Region",	"Event",	"Length",	"Cytoband",	"% of CNV Overlap",
-#' 	"Probe Median",	"% Heterozygous",	"Probes",	"Count of Gene Symbols")
-#' @importFrom("grDevices", "dev.off", "pdf")
-#' @importFrom("graphics", "hist")
-#' @importFrom("stats", "IQR", "complete.cases", "ks.test", "mad", "qnorm", "quantile", "sd", "shapiro.test")
-#' @importFrom("utils", "install.packages", "read.table", "setTxtProgressBar", "txtProgressBar")
+#' ( "Chromosome Region",	"Event",	"Length",	"Cytoband",	precentage of CNV Overlap",
+#' 	"Probe Median",	"precentage Heterozygous",	"Probes",	"Count of Gene Symbols")
+#' @import stats
+#' @import grDevices
+#' @importFrom utils read.table setTxtProgressBar txtProgressBar
 #' @export
 #'
 #Versionnumber: 0.6.0.0
 MosaicCalculator <- function(exp.nr, gender, snpm.data, deviations){
+  print("Dank u voor het kiezen van Mozaiek Bereken Tool, ontwikkeld door Robert Sietsma")
   #Set the option of the output decimal to comma
   options(OutDec = ",")
-
-  cat("Dank u voor het kiezen van Mozaiek Bereken Tool, ontwikkeld door Robert Sietsma","\n")
-
-  #Making of the PDF output directory and filename (for the histograms of all deviations)
+  
+  # Making of the PDF output directory and filename (for the histograms of all deviations)
   outputdir <- "~/rout"
   outputname <- "result.pdf"
-
+  
   #Make the outputdir directory if it doesn't exist
   if(!dir.exists(outputdir)){
     dir.create(outputdir)
   }
 
   cat("Ombouwen van deviations naar bruikbare parameters.","\n")
-  eventsoutput <- process.deviation.line(deviations)
+  eventsoutput <- process.deviation.line(deviations, gender)
 
   cat("Berekenen van kwaliteit aspecten array.","\n")
 
@@ -110,7 +109,7 @@ MosaicCalculator <- function(exp.nr, gender, snpm.data, deviations){
 
   #Function that uses the remaining events to manipulate the SNP-array data
   eventsfilter <- apply(eventsoutput, 1, function(x) {
-    process.deviation.event(x, snpm.data, correctionfactor)
+    process.deviation.event(x, snpm.data, correctionfactor, gender)
   })
   remove(eventsoutput)
 

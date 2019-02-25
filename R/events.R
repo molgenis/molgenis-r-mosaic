@@ -1,6 +1,14 @@
 #' Main deviation.event processing fuction
 #'
-process.deviation.event <- function(x, snpm.data, correctionfactor) {
+#' @param x row containing the deviation event
+#' @param snpm.data dataframe containing the BAF's
+#' @param correctionfactor number used in proceing the event
+#' @param gender string denoting gender
+#'  ( "Male", "Female" or "Unknown")
+#' @import e1071
+#' @importFrom graphics hist
+#' 
+process.deviation.event <- function(x, snpm.data, correctionfactor, gender) {
   #Saving parameters for homozygous BAF
   minbaf <- c(0,0.1)
   maxbaf <- c(1,0.9)
@@ -175,10 +183,6 @@ process.deviation.event <- function(x, snpm.data, correctionfactor) {
       #Applying the Skewness, Shapiro-Wilk/Kolmogorov-Smirnov over the split dataframes
       #Same parameters apply here as in equaltest
       #Note: The statistical P values will always be rounded down!
-      suppressWarnings(if(!require(e1071)){
-        install.packages("e1071")
-        library("e1071")
-      })
       SkewnessPValueT <- round(skewness(df2$B.Allele.Freq), digits = 4)
       SkewnessPValueB <- round(skewness(df1$B.Allele.Freq), digits = 4)
       if(nrow(equaldf) <= 2000){
@@ -420,7 +424,10 @@ process.deviation.event <- function(x, snpm.data, correctionfactor) {
 
 #' Function to rebuild deviations to usefull information
 #'
-process.deviation.line <- function(x) {
+#' @param x line containing raw the deviation event
+#' @param gender string denoting gender
+#'  ( "Male", "Female" or "Unknown")
+process.deviation.line <- function(x, gender) {
   #Selection of usefull information
   events <- cbind(x[,1:3],x$Probes)
   colnames(events) <- c("Chromosome.Region","Event","Length","Probes")

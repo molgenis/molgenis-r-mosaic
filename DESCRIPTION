@@ -18,6 +18,7 @@ Imports:
   grDevices,
   graphics,
   stats,
-  utils
+  utils,
+  e1071
 Suggests: 
     testthat
