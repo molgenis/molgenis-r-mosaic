@@ -19,7 +19,7 @@ run.demo <- function() {
   deviations <- read.table(deviations.file, header = T, sep = "\t")
 
   cat("Run analysis","\n")
-  events.filter <- MosaicCalculator(exp.nr, gender, snpm.data, deviations)
+  events.filter <- MosaicCalculator(exp.nr, gender, snpm.data, deviations, "~/mosaic-result.pdf")
   print(events.filter)
 
   cat("Done","\n")

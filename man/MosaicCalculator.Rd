@@ -4,7 +4,7 @@
 \alias{MosaicCalculator}
 \title{Calculate mosaic percentage}
 \usage{
-MosaicCalculator(exp.nr, gender, snpm.data, deviations)
+MosaicCalculator(exp.nr, gender, snpm.data, deviations, outfile)
 }
 \arguments{
 \item{exp.nr}{numbarical experiment number}
@@ -18,6 +18,8 @@ MosaicCalculator(exp.nr, gender, snpm.data, deviations)
 \item{deviations}{dataframe containing deviations
 ( "Chromosome Region",    "Event",    "Length",    "Cytoband",    precentage of CNV Overlap",
     "Probe Median",    "precentage Heterozygous",    "Probes",    "Count of Gene Symbols")}
+
+\item{outfile}{optional path to direct pdf output to, if not set './Rplots.pdf' is used}
 }
 \description{
 Takes a experiment number, gender, snp dataframe and events dataframe

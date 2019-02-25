@@ -11,26 +11,18 @@
 #' @param deviations dataframe containing deviations
 #' ( "Chromosome Region",	"Event",	"Length",	"Cytoband",	precentage of CNV Overlap",
 #' 	"Probe Median",	"precentage Heterozygous",	"Probes",	"Count of Gene Symbols")
+#' @param outfile optional path to direct pdf output to, if not set './Rplots.pdf' is used
 #' @import stats
 #' @import grDevices
 #' @importFrom utils read.table setTxtProgressBar txtProgressBar
 #' @export
 #'
 #Versionnumber: 0.6.0.0
-MosaicCalculator <- function(exp.nr, gender, snpm.data, deviations){
+MosaicCalculator <- function(exp.nr, gender, snpm.data, deviations, outfile){
   print("Dank u voor het kiezen van Mozaiek Bereken Tool, ontwikkeld door Robert Sietsma")
   #Set the option of the output decimal to comma
   options(OutDec = ",")
   
-  # Making of the PDF output directory and filename (for the histograms of all deviations)
-  outputdir <- "~/rout"
-  outputname <- "result.pdf"
-  
-  #Make the outputdir directory if it doesn't exist
-  if(!dir.exists(outputdir)){
-    dir.create(outputdir)
-  }
-
   cat("Ombouwen van deviations naar bruikbare parameters.","\n")
   eventsoutput <- process.deviation.line(deviations, gender)
 
@@ -105,7 +97,11 @@ MosaicCalculator <- function(exp.nr, gender, snpm.data, deviations){
   cat("Bezig met het filteren en berekenen van de overgebleven events, een ogenblik geduld alstublieft...","\n")
 
   #Turn on the graphical PDF output
-  pdf(file = paste(outputdir, outputname, sep = ""))
+  if ( missing(outfile)) {
+    pdf()
+  } else {
+    pdf(outfile)
+  }
 
   #Function that uses the remaining events to manipulate the SNP-array data
   eventsfilter <- apply(eventsoutput, 1, function(x) {
