@@ -1,12 +1,11 @@
-# Demo consts
-exp.nr <- 1
-gender <- "Male"
-
 #' Run demo using expr number 1 and male = gender
 #' Asks for file to be selected
 #' @export
 #'
 run.demo <- function() {
+  # Demo consts
+  exp.nr <- 1
+  gender <- "Male"
   # Run demo script
   cat("Select snp data","\n")
   snp.file <- file.choose()

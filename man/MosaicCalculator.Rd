@@ -17,8 +17,7 @@ MosaicCalculator(exp.nr, gender, snpm.data, deviations)
 
 \item{deviations}{dataframe containing deviations
 ( "Chromosome Region",    "Event",    "Length",    "Cytoband",    "% of CNV Overlap",
-    "Probe Median",    "% Heterozygous",    "Probes",    "Count of Gene Symbols")
-    @export}
+    "Probe Median",    "% Heterozygous",    "Probes",    "Count of Gene Symbols")}
 }
 \description{
 Takes a experiment number, gender, snp dataframe and events dataframe

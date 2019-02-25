@@ -1,4 +1,4 @@
 library(testthat)
-library(mosaicCalculator)
+library(mosaicr)
 
-test_check("mosaicCalculator")
+test_check("mosaicr")

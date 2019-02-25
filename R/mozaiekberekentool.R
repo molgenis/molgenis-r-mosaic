@@ -10,7 +10,11 @@
 #' @param deviations dataframe containing deviations
 #' ( "Chromosome Region",	"Event",	"Length",	"Cytoband",	"% of CNV Overlap",
 #' 	"Probe Median",	"% Heterozygous",	"Probes",	"Count of Gene Symbols")
-#' 	@export
+#' @importFrom("grDevices", "dev.off", "pdf")
+#' @importFrom("graphics", "hist")
+#' @importFrom("stats", "IQR", "complete.cases", "ks.test", "mad", "qnorm", "quantile", "sd", "shapiro.test")
+#' @importFrom("utils", "install.packages", "read.table", "setTxtProgressBar", "txtProgressBar")
+#' @export
 #'
 #Versionnumber: 0.6.0.0
 MosaicCalculator <- function(exp.nr, gender, snpm.data, deviations){
