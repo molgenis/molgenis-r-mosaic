@@ -14,7 +14,10 @@
 #' @param outfile optional path to direct pdf output to, if not set './Rplots.pdf' is used
 #' @import stats
 #' @import grDevices
+#' @import grid
+#' @import gridExtra
 #' @importFrom utils read.table setTxtProgressBar txtProgressBar
+#' @importFrom graphics plot text
 #' @export
 #'
 #Versionnumber: 0.6.0.0
@@ -93,12 +96,13 @@ MosaicCalculator <- function(exp.nr, gender, snpm.data, deviations, outfile){
 
   #Returning the number of rows that are about to be used in the apply calculation
   aantalevents <- nrow(eventsoutput)
-  cat(paste(aantalevents, " events die groter zijn dan 150kb, meer dan 10 probes hebben en LOH/AO gebieden groter dan 5Mb.", sep = ""),"\n")
+  line1 <- paste(aantalevents, " events die groter zijn dan 150kb, meer dan 10 probes hebben en LOH/AO gebieden groter dan 5Mb.", sep = "")
+  cat(line1, "\n")
   cat("Bezig met het filteren en berekenen van de overgebleven events, een ogenblik geduld alstublieft...","\n")
 
   #Turn on the graphical PDF output
   if ( missing(outfile)) {
-    pdf()
+    pdf("~/result.pdf")
   } else {
     pdf(outfile)
   }
@@ -109,23 +113,48 @@ MosaicCalculator <- function(exp.nr, gender, snpm.data, deviations, outfile){
   })
   remove(eventsoutput)
 
-  #Turn off the graphical PDF output
-  dev.off()
-
   #Reset eventsfilter to vertical dataframe
   eventsfilter <- data.frame(matrix(unlist(eventsfilter), nrow = length(eventsfilter)/10, byrow = T), stringsAsFactors = F)
-  colnames(eventsfilter) <- c("Chromosoom Regio","CNV","Gem. BAF","N.V. BAF","P>0.5","P<0.5","Skew>0.5","Skew<0.5","N.V. >0.5","N.V. <0.5")
+  # colnames(eventsfilter) <- c("Chromosoom Regio","CNV","Gem. BAF","N.V. BAF","P>0.5","P<0.5","Skew>0.5","Skew<0.5","N.V. >0.5","N.V. <0.5")
 
   #Returning the common array values
-  cat("SNPs buiten afwijkingen:",SNPs_used_in_averageBAF,"\n")
-  cat("Gemiddelde BAF:",meanaverageBAF,"\n")
-  cat("STDev BAF: ", sdaverageBAF,"\n")
-  cat("Gemiddelde afwijking van BAF 0.5: ", MADaverageBAF,"\n")
-  cat("Correctiefactor: ", correctionfactor, "\n")
+  line2 <- paste0("SNPs buiten afwijkingen: ",SNPs_used_in_averageBAF)
+  line3 <- paste0("Gemiddelde BAF: ",meanaverageBAF)
+  line4 <- paste0("STDev BAF: ", sdaverageBAF)
+  line5 <- paste0("Gemiddelde afwijking van BAF 0.5: ", MADaverageBAF)
+  line6 <- paste0("Correctiefactor: ", correctionfactor)
+  
+  print(line1)
+  print(line2)
+  print(line3)
+  print(line4)
+  print(line5)
+  print(line6)
 
+  plot(NA, xlim = c(0, 6), ylim = c(0, 6), bty = 'n', xaxt = 'n', yaxt = 'n', xlab = '', ylab = '')
+  text(0.1, 6, line1, pos = 4, cex = 0.5)
+  text(0.1, 5, line2, pos = 4, cex = 0.5)
+  text(0.1, 4, line3, pos = 4, cex = 0.5)
+  text(0.1, 3, line4, pos = 4, cex = 0.5)
+  text(0.1, 2, line5, pos = 4, cex = 0.5)
+  text(0.1, 1, line6, pos = 4, cex = 0.5)
+  
+  # Scale down the font size to make the table fix A4
+  eventsfilter.theme <- gridExtra::ttheme_default(
+    core = list(fg_params=list(cex = 0.4)),
+    colhead = list(fg_params=list(cex = 0.5)),
+    rowhead = list(fg_params=list(cex = 0.5)))
+  
+  cols <- c("Chromosoom Regio","CNV","Gem. BAF","N.V. BAF","P>0.5","P<0.5","Skew>0.5","Skew<0.5","N.V. >0.5","N.V. <0.5")
+  grb <- tableGrob(eventsfilter, cols = cols, rows = NULL, theme = eventsfilter.theme)
+  grid.arrange(grb)
+  
+  #Turn off the graphical PDF output
+  dev.off()
+  
   #Clearing the memory of junk
   suppressMessages(gc())
-
+  
   #Returning the final dataframe
   return(eventsfilter)
 }

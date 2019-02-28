@@ -19,6 +19,8 @@ Imports:
   graphics,
   stats,
   utils,
-  e1071
+  e1071,
+  grid,
+  gridExtra
 Suggests: 
     testthat
