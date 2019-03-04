@@ -115,29 +115,27 @@ MosaicCalculator <- function(exp.nr, gender, snpm.data, deviations, outfile){
 
   #Reset eventsfilter to vertical dataframe
   eventsfilter <- data.frame(matrix(unlist(eventsfilter), nrow = length(eventsfilter)/10, byrow = T), stringsAsFactors = F)
-  # colnames(eventsfilter) <- c("Chromosoom Regio","CNV","Gem. BAF","N.V. BAF","P>0.5","P<0.5","Skew>0.5","Skew<0.5","N.V. >0.5","N.V. <0.5")
-
+ 
   #Returning the common array values
-  line2 <- paste0("SNPs buiten afwijkingen: ",SNPs_used_in_averageBAF)
-  line3 <- paste0("Gemiddelde BAF: ",meanaverageBAF)
-  line4 <- paste0("STDev BAF: ", sdaverageBAF)
-  line5 <- paste0("Gemiddelde afwijking van BAF 0.5: ", MADaverageBAF)
-  line6 <- paste0("Correctiefactor: ", correctionfactor)
+  result.lines <- NULL
+  result.lines <- c(result.lines, "RESULTS:")
+  result.lines <- c(result.lines, "")
   
-  print(line1)
-  print(line2)
-  print(line3)
-  print(line4)
-  print(line5)
-  print(line6)
-
-  plot(NA, xlim = c(0, 6), ylim = c(0, 6), bty = 'n', xaxt = 'n', yaxt = 'n', xlab = '', ylab = '')
-  text(0.1, 6, line1, pos = 4, cex = 0.5)
-  text(0.1, 5, line2, pos = 4, cex = 0.5)
-  text(0.1, 4, line3, pos = 4, cex = 0.5)
-  text(0.1, 3, line4, pos = 4, cex = 0.5)
-  text(0.1, 2, line5, pos = 4, cex = 0.5)
-  text(0.1, 1, line6, pos = 4, cex = 0.5)
+  #Returning the number of rows that are about to be used in the apply calculation
+  result.lines <- c(result.lines, paste(aantalevents, "events that a larger then 150kb."))
+  result.lines <- c(result.lines, "More then 10 probes have a LOH/AO area larger then 5Mb.")
+  result.lines <- c(result.lines, "")
+  result.lines <- c(result.lines, c("SNPs buiten afwijkingen: ", SNPs_used_in_averageBAF))
+  result.lines <- c(result.lines, "")
+  result.lines <- c(result.lines, c("Gemiddelde BAF: ", meanaverageBAF))
+  result.lines <- c(result.lines, "")
+  result.lines <- c(result.lines, c("STDev BAF: ", sdaverageBAF))
+  result.lines <- c(result.lines, "")
+  result.lines <- c(result.lines, c("Gemiddelde afwijking van BAF 0.5: ", MADaverageBAF))
+  result.lines <- c(result.lines, "")
+  result.lines <- c(result.lines, c("Correctiefactor: ", correctionfactor))
+  result.lines <- c(result.lines, "")
+  OutputToPdf(cat(result.lines, sep = "\n" ))
   
   # Scale down the font size to make the table fix A4
   eventsfilter.theme <- gridExtra::ttheme_default(
