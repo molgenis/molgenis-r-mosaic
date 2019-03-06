@@ -40,7 +40,7 @@ process.deviation.event <- function(x, snpm.data, correctionfactor, gender) {
 
   #Homozygous copy losses disturb the BAF signal
   if(CNVType == "Homozygous Copy Loss"){
-    return(c(OCR,"Homozygote deletion","NA","NA","NA","NA","NA","NA","NA","NA"))
+    return(c(OCR,"Homozygous deletion","NA","NA","NA","NA","NA","NA","NA","NA"))
   }
   else{
     #Manipulating the SNP-array file to only contain the matching chromosome.
