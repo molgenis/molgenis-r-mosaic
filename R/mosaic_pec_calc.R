@@ -22,7 +22,6 @@
 #'
 #Versionnumber: 0.6.0.0
 MosaicCalculator <- function(exp.nr, gender, snpm.data, deviations, outfile){
-  print("Dank u voor het kiezen van Mozaiek Bereken Tool, ontwikkeld door Robert Sietsma")
   #Set the option of the output decimal to comma
   options(OutDec = ",")
   
