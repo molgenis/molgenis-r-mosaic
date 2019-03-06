@@ -2,7 +2,6 @@
 
 export(MosaicCalculator)
 export(run.demo)
-export(square)
 import(e1071)
 import(grDevices)
 import(grid)
