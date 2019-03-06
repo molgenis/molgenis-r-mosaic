@@ -25,10 +25,10 @@ MosaicCalculator <- function(exp.nr, gender, snpm.data, deviations, outfile){
   #Set the option of the output decimal to comma
   options(OutDec = ",")
   
-  cat("Ombouwen van deviations naar bruikbare parameters.","\n")
+  cat("Conversion from deviations to usable parameters.","\n")
   eventsoutput <- process.deviation.line(deviations, gender)
 
-  cat("Berekenen van kwaliteit aspecten array.","\n")
+  cat("Calculate quality aspects array.","\n")
 
   #Calculating average BAF outside of any event (within 0.2-0.8 BAF range)
   averageBAF <- snpm.data[with(snpm.data, B.Allele.Freq >= 0.2 & B.Allele.Freq <= 0.8),]
@@ -95,9 +95,9 @@ MosaicCalculator <- function(exp.nr, gender, snpm.data, deviations, outfile){
 
   #Returning the number of rows that are about to be used in the apply calculation
   aantalevents <- nrow(eventsoutput)
-  line1 <- paste(aantalevents, " events die groter zijn dan 150kb, meer dan 10 probes hebben en LOH/AO gebieden groter dan 5Mb.", sep = "")
+  line1 <- paste(aantalevents, " events that are larger than 150kb, have more than 10 probes and LOH / AO areas larger than 5Mb", sep = "")
   cat(line1, "\n")
-  cat("Bezig met het filteren en berekenen van de overgebleven events, een ogenblik geduld alstublieft...","\n")
+  cat("Busy filtering and calculating the remaining events, please wait ...","\n")
 
   #Turn on the graphical PDF output
   if ( missing(outfile)) {
@@ -121,18 +121,18 @@ MosaicCalculator <- function(exp.nr, gender, snpm.data, deviations, outfile){
   result.lines <- c(result.lines, "")
   
   #Returning the number of rows that are about to be used in the apply calculation
-  result.lines <- c(result.lines, paste(aantalevents, "events that a larger then 150kb."))
-  result.lines <- c(result.lines, "More then 10 probes have a LOH/AO area larger then 5Mb.")
+  result.lines <- c(result.lines, paste(aantalevents, "events that are larger than 150kb,"))
+  result.lines <- c(result.lines, "have more than 10 probes and LOH / AO areas larger than 5Mb")
   result.lines <- c(result.lines, "")
-  result.lines <- c(result.lines, c("SNPs buiten afwijkingen: ", SNPs_used_in_averageBAF))
+  result.lines <- c(result.lines, c("SNPs outside of deviations:", SNPs_used_in_averageBAF))
   result.lines <- c(result.lines, "")
-  result.lines <- c(result.lines, c("Gemiddelde BAF: ", meanaverageBAF))
+  result.lines <- c(result.lines, c("Average BAF: ", meanaverageBAF))
   result.lines <- c(result.lines, "")
   result.lines <- c(result.lines, c("STDev BAF: ", sdaverageBAF))
   result.lines <- c(result.lines, "")
-  result.lines <- c(result.lines, c("Gemiddelde afwijking van BAF 0.5: ", MADaverageBAF))
+  result.lines <- c(result.lines, c("Average deviation from BAF 0.5:", MADaverageBAF))
   result.lines <- c(result.lines, "")
-  result.lines <- c(result.lines, c("Correctiefactor: ", correctionfactor))
+  result.lines <- c(result.lines, c("Correction factor: ", correctionfactor))
   result.lines <- c(result.lines, "")
   OutputToPdf(cat(result.lines, sep = "\n" ))
   
