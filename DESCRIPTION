@@ -8,8 +8,7 @@ Authors@R: as.person(c(
     "Mariska Slofstra <m.k.slofstra@umcg.nl> [aut]"
   ))
 Maintainer: Connor Stroomberg <c.stroomberg@rug.nl>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: Calculates mosaic percentage.
 License: GNU Lesser General Public License
 Encoding: UTF-8
 LazyData: true

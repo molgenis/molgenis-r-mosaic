@@ -40,7 +40,7 @@ process.deviation.event <- function(x, snpm.data, correctionfactor, gender) {
 
   #Homozygous copy losses disturb the BAF signal
   if(CNVType == "Homozygous Copy Loss"){
-    return(c(OCR,"Homozygote deletie","N.V.T.","N.V.T.","N.V.T.","N.V.T.","N.V.T.","N.V.T.","N.V.T.","N.V.T."))
+    return(c(OCR,"Homozygote deletion","NA","NA","NA","NA","NA","NA","NA","NA"))
   }
   else{
     #Manipulating the SNP-array file to only contain the matching chromosome.
@@ -64,9 +64,9 @@ process.deviation.event <- function(x, snpm.data, correctionfactor, gender) {
 
         #Make CNVType more clear
         if(CNVType == "CN Loss"){
-          CNVType <- "Deletie"
+          CNVType <- "Deletion"
         }
-        return(c(OCR,CNVType,"N.V.T.","N.V.T.",NRT,NRB,"N.V.T.","N.V.T.","N.V.T.","N.V.T."))
+        return(c(OCR,CNVType,"NA","NA",NRT,NRB,"NA","NA","NA","NA"))
       }
       else{
         #Else: there are not enough SNPs to accuratly calculate a percentage range
@@ -75,12 +75,12 @@ process.deviation.event <- function(x, snpm.data, correctionfactor, gender) {
 
         #Make CNVType more clear
         if(CNVType == "CN Gain"){
-          CNVType <- "Duplicatie"
+          CNVType <- "Duplication"
         }
         if(CNVType == "High Copy Gain"){
-          CNVType <- "Tetrasomie"
+          CNVType <- "Tetrasomy"
         }
-        return(c(OCR,CNVType,"N.V.T.","N.V.T.",NRT,NRB,"N.V.T.","N.V.T.","N.V.T.","N.V.T."))
+        return(c(OCR,CNVType,"NA","NA",NRT,NRB,"NA","NA","NA","NA"))
       }
     }
     else {
@@ -125,15 +125,15 @@ process.deviation.event <- function(x, snpm.data, correctionfactor, gender) {
       #Create histogramms of the deviation
       #Create histogram CNVtype
       if(CNVType == "CN Gain"){
-        hCNVType <- "Duplicatie"
+        hCNVType <- "Duplication"
       }
       if(CNVType == "CN Loss"){
-        hCNVType <- "Deletie"
+        hCNVType <- "Deletion"
       }
       if(CNVType == "High Copy Gain"){
-        hCNVType <- "Tetrasomie"
+        hCNVType <- "Tetrasomy"
       }
-      hist(equaldf$B.Allele.Freq, main = paste("[",chr,":",formatC(start, big.mark = "."),"-",formatC(stop, big.mark = ".")," ", hCNVType,"] [Gecombineerde BAF]", sep = ""), xlab = "BAF")
+      hist(equaldf$B.Allele.Freq, main = paste("[",chr,":",formatC(start, big.mark = "."),"-",formatC(stop, big.mark = ".")," ", hCNVType,"] [Combined BAF]", sep = ""), xlab = "BAF")
       hist(df2$B.Allele.Freq, main = paste("[",chr,":",formatC(start, big.mark = "."),"-",formatC(stop, big.mark = ".")," ", hCNVType,"] [BAF > 0.5]", sep = ""), xlab = "BAF")
       hist(df1$B.Allele.Freq, main = paste("[",chr,":",formatC(start, big.mark = "."),"-",formatC(stop, big.mark = ".")," ", hCNVType,"] [BAF < 0.5]", sep = ""), xlab = "BAF")
 
@@ -158,18 +158,18 @@ process.deviation.event <- function(x, snpm.data, correctionfactor, gender) {
       }
       #Lower than 30: No accurate test possible
       if(all(nrow(equaldf) <= 2000, any(nrow(equaldf[equaldf$B.Allele.Freq > 0.5,]) <= 30, nrow(equaldf[equaldf$B.Allele.Freq <0.5,]) <= 30))){
-        equaltest <- "N.V.T."
+        equaltest <- "NA"
       }
 
-      #Apply tag "Goed" (N.V. < 0.05) or "M.G." (N.V. >= 0.05) for the combined BAF of mutation
+      #Apply tag "Good" (N.V. < 0.05) or "M.G." (N.V. >= 0.05) for the combined BAF of mutation
       if(equaltest[1] >= 0.05){
         outputequaltest <- paste("[M.G]",equaltest[2],"[",equaltest[1],"]", sep = "")
       }
       if(equaltest[1] < 0.05){
-        outputequaltest <- paste("[Goed]",equaltest[2],"[",equaltest[1],"]", sep = "")
+        outputequaltest <- paste("[Good]",equaltest[2],"[",equaltest[1],"]", sep = "")
       }
-      if(equaltest[1] == "N.V.T."){
-        outputequaltest <- "N.V.T."
+      if(equaltest[1] == "NA"){
+        outputequaltest <- "NA"
       }
 
       #Remove MeanOfMutation so numbers don't get mixed up
@@ -187,8 +187,8 @@ process.deviation.event <- function(x, snpm.data, correctionfactor, gender) {
       SkewnessPValueB <- round(skewness(df1$B.Allele.Freq), digits = 4)
       if(nrow(equaldf) <= 2000){
         if(any(nrow(df1) <= 30, nrow(df2) <= 30)){
-          shapiro1 <- "N.V.T."
-          shapiro2 <- "N.V.T."
+          shapiro1 <- "NA"
+          shapiro2 <- "NA"
         }
         else{
           shapiro1 <- shapiro.test(df2$B.Allele.Freq)[1:2][2][[1]]
@@ -272,15 +272,15 @@ process.deviation.event <- function(x, snpm.data, correctionfactor, gender) {
         P95L1[P95L1 > 100] <- 100
 
         #Check whenever the N.V. > 0.05 has a P-value lower than 0.05
-        #If so, return with N.B tag
+        #If so, return with Note tag
         if(shapiro1[1] < 0.05){
           #Check whenever percentages are the same
           if(min(P95H1) == max(P95H1)){
             #If they are, return only 1
-            OPT <- paste("[N.B][",min(P95H1),"][",nrow(df2),"]", sep = "")
+            OPT <- paste("[Note][",min(P95H1),"][",nrow(df2),"]", sep = "")
           }
           else{
-            OPT <- paste("[N.B][",min(P95H1),"-",max(P95H1),"][",nrow(df2),"]",sep = "")
+            OPT <- paste("[Note][",min(P95H1),"-",max(P95H1),"][",nrow(df2),"]",sep = "")
           }
         }
         #If not, return normally
@@ -294,15 +294,15 @@ process.deviation.event <- function(x, snpm.data, correctionfactor, gender) {
         }
 
         #Check whenever the N.V. < 0.05 has a P-value lower than 0.05
-        #If so, return with N.B tag
+        #If so, return with Note tag
         if(shapiro2[1] < 0.05){
           #Check whenever percentages are the same
           if(min(P95L1) == max(P95L1)){
             #If they are, return only 1
-            OPB <- paste("[N.B][",min(P95L1),"][",nrow(df1),"]", sep = "")
+            OPB <- paste("[Note][",min(P95L1),"][",nrow(df1),"]", sep = "")
           }
           else{
-            OPB <- paste("[N.B][",min(P95L1),"-",max(P95L1),"][",nrow(df1),"]",sep = "")
+            OPB <- paste("[Note][",min(P95L1),"-",max(P95L1),"][",nrow(df1),"]",sep = "")
           }
         }
         #If not, return normally
@@ -323,7 +323,7 @@ process.deviation.event <- function(x, snpm.data, correctionfactor, gender) {
         }
 
         #Return output, with event altered to !High Copy Gain!
-        return(c(OCR,"!Tetrasomie!",MeanOfMutation,outputequaltest,OPT,OPB,SkewnessPValueT,SkewnessPValueB,shapiro1,shapiro2))
+        return(c(OCR,"!Tetrasomy!",MeanOfMutation,outputequaltest,OPT,OPB,SkewnessPValueT,SkewnessPValueB,shapiro1,shapiro2))
       }
       else{
 
@@ -342,11 +342,11 @@ process.deviation.event <- function(x, snpm.data, correctionfactor, gender) {
             if(min(P95H) == max(P95H)){
               #If they are, return only 1
               P95H <- P95H[1]
-              OPT <- paste("[N.B][",P95H,"][",nrow(df2),"]",sep = "")
+              OPT <- paste("[Note][",P95H,"][",nrow(df2),"]",sep = "")
             }
             else{
               #If they aren't, return minimum to maximum
-              OPT <- paste("[N.B][",min(P95H),"-",max(P95H),"][",nrow(df2),"]",sep = "")
+              OPT <- paste("[Note][",min(P95H),"-",max(P95H),"][",nrow(df2),"]",sep = "")
             }
           }
         }
@@ -373,10 +373,10 @@ process.deviation.event <- function(x, snpm.data, correctionfactor, gender) {
             #Check if minimum and maximum percentage are the same
             if(min(P95L) == max(P95L)){
               P95L <- P95L[1]
-              OPB <- paste("[N.B][",P95L,"][",nrow(df1),"]", sep = "")
+              OPB <- paste("[Note][",P95L,"][",nrow(df1),"]", sep = "")
             }
             else{
-              OPB <- paste("[N.B][",min(P95L),"-",max(P95L),"][", nrow(df1),"]", sep = "")
+              OPB <- paste("[Note][",min(P95L),"-",max(P95L),"][", nrow(df1),"]", sep = "")
             }
           }
         }
@@ -405,13 +405,13 @@ process.deviation.event <- function(x, snpm.data, correctionfactor, gender) {
 
         #Make CNV Type more clear
         if (CNVType == "CN Gain") {
-          CNVType <- "Duplicatie"
+          CNVType <- "Duplication"
         }
         if (CNVType == "CN Loss") {
-          CNVType <- "Deletie"
+          CNVType <- "Deletion"
         }
         if (CNVType == "High Copy Gain") {
-          CNVType <- "Tetrasomie"
+          CNVType <- "Tetrasomy"
         }
 
         #Return output
