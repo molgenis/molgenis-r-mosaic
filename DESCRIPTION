@@ -1,7 +1,7 @@
 Package: mosaicr
 Type: Package
 Title: Mosaic Calculator
-Version: 0.1.0
+Version: 0.1.0.9000
 Authors@R: as.person(c(
     "Robert Jarik Sietsma [aut]", 
     "Connor Stroomberg <c.stroomberg@rug.nl> [cre]",
