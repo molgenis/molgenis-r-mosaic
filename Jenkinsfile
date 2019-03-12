@@ -5,7 +5,7 @@ pipeline {
         }
     }
     environment {
-        REPOSITORY = 'molgenis/molgenis-r-client'
+        REPOSITORY = 'molgenis/molgenis-r-mosaic'
         REGISTRY = 'https://registry.molgenis.org/repository/r-hosted'
     }
     stages {
@@ -19,14 +19,13 @@ pipeline {
                 container('vault') {
                     script {
                         env.GITHUB_TOKEN = sh(script: 'vault read -field=value secret/ops/token/github', returnStdout: true)
-                        env.CODECOV_TOKEN = sh(script: 'vault read -field=molgenis-r-client secret/ops/token/codecov', returnStdout: true)
+                        env.CODECOV_TOKEN = sh(script: 'vault read -field=molgenis-r-mosaic secret/ops/token/codecov', returnStdout: true)
                         env.NEXUS_USER = sh(script: 'vault read -field=username secret/ops/account/nexus', returnStdout: true)
                         env.NEXUS_PASS = sh(script: 'vault read -field=password secret/ops/account/nexus', returnStdout: true)
                     }
                 }
                 script {
                     env.GIT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
-                    env.COMMIT_MESSAGE = sh(script: 'git log --format=%B -n 1', returnStdout: true).trim()
                 }
                 script {
                     env.PACKAGE = sh(script: "grep Package DESCRIPTION | head -n1 | cut -d':' -f2", returnStdout: true).trim()
@@ -35,7 +34,7 @@ pipeline {
                 sh "git fetch --tags"
                 container('r') {
                     sh "Rscript -e \"git2r::config(user.email = 'molgenis+ci@gmail.com', user.name = 'MOLGENIS Jenkins')\""
-                    sh "Rscript -e \"install.packages(c('rjson','ff','httptest','usethis'), repos='https://registry.molgenis.org/repository/R')\""
+                    sh "Rscript -e \"install.packages(c('e1071','gridExtra'), repos='https://registry.molgenis.org/repository/R')\""
                 }
             }
         }
@@ -141,6 +140,11 @@ pipeline {
                     }
                     sh "git tag v${TAG}"
                     sh "git push --tags origin master"
+                }
+            }
+            post {
+                success {
+                    hubotSend(message:  ":confetti_ball: Released ${PACKAGE} v${TAG}. See https://github.com/${REPOSITORY}/releases/tag/v${TAG}", status:'SUCCESS')
                 }
             }
         }
