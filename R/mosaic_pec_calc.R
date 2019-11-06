@@ -1,9 +1,9 @@
 #' Calculate mosaic percentage
-#' 
+#'
 #' Takes a experiment number, gender, snp dataframe and events dataframe
 #' and calculates the percentage of mosaic dna
-#' 
-#' @param exp.nr numbarical experiment number
+#'
+#' @param exp.nr numerical experiment number
 #' @param gender string denoting gender
 #'  ( "Male", "Female" or "Unknown")
 #' @param snpm.data dataframe containing snp data
@@ -24,7 +24,7 @@
 MosaicCalculator <- function(exp.nr, gender, snpm.data, deviations, outfile){
   #Set the option of the output decimal to comma
   options(OutDec = ",")
-  
+
   cat("Conversion from deviations to usable parameters.","\n")
   eventsoutput <- process.deviation.line(deviations, gender)
 
@@ -94,8 +94,8 @@ MosaicCalculator <- function(exp.nr, gender, snpm.data, deviations, outfile){
   eventsoutput$Probes <- NULL
 
   #Returning the number of rows that are about to be used in the apply calculation
-  aantalevents <- nrow(eventsoutput)
-  line1 <- paste(aantalevents, " events that are larger than 150kb, have more than 10 probes and LOH / AO areas larger than 5Mb", sep = "")
+  numberevents <- nrow(eventsoutput)
+  line1 <- paste(numberevents, " events that are larger than 150kb, have more than 10 probes and LOH / AO areas larger than 5Mb", sep = "")
   cat(line1, "\n")
   cat("Busy filtering and calculating the remaining events, please wait ...","\n")
 
@@ -114,14 +114,14 @@ MosaicCalculator <- function(exp.nr, gender, snpm.data, deviations, outfile){
 
   #Reset eventsfilter to vertical dataframe
   eventsfilter <- data.frame(matrix(unlist(eventsfilter), nrow = length(eventsfilter)/10, byrow = T), stringsAsFactors = F)
- 
+
   #Returning the common array values
   result.lines <- NULL
   result.lines <- c(result.lines, "RESULTS:")
   result.lines <- c(result.lines, "")
-  
+
   #Returning the number of rows that are about to be used in the apply calculation
-  result.lines <- c(result.lines, paste(aantalevents, "events that are larger than 150kb,"))
+  result.lines <- c(result.lines, paste(numberevents, "events that are larger than 150kb,"))
   result.lines <- c(result.lines, "have more than 10 probes and LOH / AO areas larger than 5Mb")
   result.lines <- c(result.lines, "")
   result.lines <- c(result.lines, c("SNPs outside of deviations:", SNPs_used_in_averageBAF))
@@ -135,23 +135,23 @@ MosaicCalculator <- function(exp.nr, gender, snpm.data, deviations, outfile){
   result.lines <- c(result.lines, c("Correction factor: ", correctionfactor))
   result.lines <- c(result.lines, "")
   OutputToPdf(cat(result.lines, sep = "\n" ))
-  
+
   # Scale down the font size to make the table fix A4
   eventsfilter.theme <- gridExtra::ttheme_default(
     core = list(fg_params=list(cex = 0.4)),
     colhead = list(fg_params=list(cex = 0.5)),
     rowhead = list(fg_params=list(cex = 0.5)))
-  
+
   cols <- c("Chromosoom Regio","CNV","Gem. BAF","N.V. BAF","P>0.5","P<0.5","Skew>0.5","Skew<0.5","N.V. >0.5","N.V. <0.5")
   grb <- tableGrob(eventsfilter, cols = cols, rows = NULL, theme = eventsfilter.theme)
   grid.arrange(grb)
-  
+
   #Turn off the graphical PDF output
   dev.off()
-  
+
   #Clearing the memory of junk
   suppressMessages(gc())
-  
+
   #Returning the final dataframe
   return(eventsfilter)
 }

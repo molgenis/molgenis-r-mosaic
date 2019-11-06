@@ -2,12 +2,12 @@
 #'
 #' @param x row containing the deviation event
 #' @param snpm.data dataframe containing the BAF's
-#' @param correctionfactor number used in proceing the event
+#' @param correctionfactor number used in processing the event
 #' @param gender string denoting gender
 #'  ( "Male", "Female" or "Unknown")
 #' @import e1071
 #' @importFrom graphics hist
-#' 
+#'
 process.deviation.event <- function(x, snpm.data, correctionfactor, gender) {
   #Saving parameters for homozygous BAF
   minbaf <- c(0,0.1)
@@ -54,7 +54,7 @@ process.deviation.event <- function(x, snpm.data, correctionfactor, gender) {
     df1 <- df1[with(df1, B.Allele.Freq >= max(minbaf) & B.Allele.Freq <= min(maxbaf)),]
     df1 <- df1[complete.cases(df1),]
 
-    #Check to control the amount of rows that remain
+    #Check to control the number of rows that remain
     if(any(nrow(df1) < 1,nrow(df1[df1$B.Allele.Freq > 0.5,]) <= 3, nrow(df1[df1$B.Allele.Freq < 0.5,]) <= 3)){
       #With deletions, its highly likely that all SNPs are filtered out because of a high percentage mosaicism
       if(CNVType %in% c("CN Loss", "LOH")){
@@ -84,7 +84,7 @@ process.deviation.event <- function(x, snpm.data, correctionfactor, gender) {
       }
     }
     else {
-      #Splitsing the dataframe in 2 dataframes, one containing SNP with a BAF >0.5 and one <0.5 for outlier removing
+      #Splitting the dataframe in 2 dataframes, one containing SNP with a BAF >0.5 and one <0.5 for outlier removing
       df1 <- df1[complete.cases(df1),]
       df2 <- df1[df1$B.Allele.Freq > 0.5,]
       df1 <- df1[df1$B.Allele.Freq < 0.5,]
@@ -108,13 +108,13 @@ process.deviation.event <- function(x, snpm.data, correctionfactor, gender) {
       if(all(MeanOfMutation > 0.5, correctionfactor > 1)){
         equaldf$B.Allele.Freq <- equaldf$B.Allele.Freq / correctionfactor
       }
-      if(all(MeanOfMutation < 0.5,correctionfactor < 1)){
+      if(all(MeanOfMutation < 0.5, correctionfactor < 1)){
         equaldf$B.Allele.Freq <- equaldf$B.Allele.Freq / correctionfactor
       }
-      if(all(MeanOfMutation > 0.5,correctionfactor < 1)){
+      if(all(MeanOfMutation > 0.5, correctionfactor < 1)){
         equaldf$B.Allele.Freq <- equaldf$B.Allele.Freq * correctionfactor
       }
-      if(all(MeanOfMutation < 0.5,correctionfactor > 1)){
+      if(all(MeanOfMutation < 0.5, correctionfactor > 1)){
         equaldf$B.Allele.Freq <- equaldf$B.Allele.Freq * correctionfactor
       }
 
