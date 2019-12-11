@@ -12,6 +12,7 @@
 #' ( "Chromosome Region",	"Event",	"Length",	"Cytoband",	precentage of CNV Overlap",
 #' 	"Probe Median",	"precentage Heterozygous",	"Probes",	"Count of Gene Symbols")
 #' @param outfile optional path to direct pdf output to, if not set './Rplots.pdf' is used
+#' @import e1071 #To enable skewness calculations
 #' @import stats
 #' @import grDevices
 #' @import grid
@@ -22,8 +23,8 @@
 #'
 #Versionnumber: 0.6.0.0
 MosaicCalculator <- function(exp.nr, gender, snpm.data, deviations, outfile){
-  #Set the option of the output decimal to comma
-  options(OutDec = ",")
+  #Set the option of the output decimal to .
+  options(OutDec = ".")
 
   cat("Conversion from deviations to usable parameters.","\n")
   eventsoutput <- process.deviation.line(deviations, gender)
@@ -45,7 +46,7 @@ MosaicCalculator <- function(exp.nr, gender, snpm.data, deviations, outfile){
     averageBAF[averageBAF$Chr %in% c("X","Y","XY","0","MT"),] <- NA
     averageBAF <- averageBAF[complete.cases(averageBAF),]
   }
-  #Overwriting averageBAF dataframe to exclude SNPs that are within deviations
+  #Overwriting averageBAF dataframe to exclude SNPs that are within deviations  ##COMMENT: CAN THIS BE PROGRAMMED MORE EFFICIENTLY????
   #WARNING: This apply takes up a lot of memory unless gc() is used!
   #Including a progress bar to show that the tool isn't freezing
   pb <- txtProgressBar(min = 0, max = nrow(eventsoutput), style = 3)
@@ -70,7 +71,7 @@ MosaicCalculator <- function(exp.nr, gender, snpm.data, deviations, outfile){
   #Making of array specific quality parameters
   percentageofSNPs <- round((nrow(averageBAF)/nrow(snpm.data))*100, digits = 2)
   meanaverageBAF <- paste(round(mean(averageBAF$B.Allele.Freq), digits = 4), sep = "")
-  SNPs_used_in_averageBAF <- paste("[",formatC(nrow(averageBAF), big.mark = "."),"/",formatC(nrow(snpm.data), big.mark = "."),"][",percentageofSNPs,"%]", sep = "")
+  SNPs_used_in_averageBAF <- paste("[",formatC(nrow(averageBAF), big.mark = ","),"/",formatC(nrow(snpm.data), big.mark = ","),"][",percentageofSNPs,"%]", sep = "")
   sdaverageBAF <- round(sd(averageBAF$B.Allele.Freq), digits = 4)
   MADaverageBAF <- round(mad(x = averageBAF$B.Allele.Freq, center = 0.5), digits = 4)
   remove(averageBAF)
@@ -142,7 +143,7 @@ MosaicCalculator <- function(exp.nr, gender, snpm.data, deviations, outfile){
     colhead = list(fg_params=list(cex = 0.5)),
     rowhead = list(fg_params=list(cex = 0.5)))
 
-  cols <- c("Chromosoom Regio","CNV","Gem. BAF","N.V. BAF","P>0.5","P<0.5","Skew>0.5","Skew<0.5","N.V. >0.5","N.V. <0.5")
+  cols <- c("Chromosome Region","CNV","Mean BAF","NormDist BAF","P>0.5","P<0.5","Skew>0.5","Skew<0.5","NormDist >0.5","NormDist <0.5")
   grb <- tableGrob(eventsfilter, cols = cols, rows = NULL, theme = eventsfilter.theme)
   grid.arrange(grb)
 

@@ -4,8 +4,8 @@
 #'
 run.demo <- function() {
   # Demo consts
-  exp.nr <- 1
-  gender <- "Male"
+  exp.nr <- 1         ##COMMENT: GIVE AS INPUT PARAMETER
+  gender <- "Male"    ##COMMENT: GIVE AS INPUT PARAMETER
   # Run demo script
   cat("Select snp data","\n")
   snp.file <- file.choose()
@@ -23,15 +23,14 @@ run.demo <- function() {
   snpm.data <- read.table(snp.file, skip = 9, header = T, sep = "\t")[,c(chrom,chrompos,BAF)]
 
 
-  cat("Select snp data","\n")
+  cat("Select CNV data","\n")
   deviations.file <- file.choose()
   cat("Read events","\n")
   deviations <- read.table(deviations.file, header = T, sep = "\t")
 
   cat("Run analysis","\n")
-  events.filter <- MosaicCalculator(exp.nr, gender, snpm.data, deviations, "~/mosaic-result.pdf")
+  events.filter <- MosaicCalculator(exp.nr, gender, snpm.data, deviations, "~/mosaic-result.pdf")  ##COMMENT CAN THIS BE CHANGES TO NAME FILE AND SELECT LOCATION?
   print(events.filter)
 
   cat("Done","\n")
 }
-
