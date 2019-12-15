@@ -2,12 +2,12 @@
 #'
 #' @param x row containing the deviation event
 #' @param snpm.data dataframe containing the BAF's
-#' @param correctionfactor number used in proceing the event
+#' @param correctionfactor number used in processing the event
 #' @param gender string denoting gender
 #'  ( "Male", "Female" or "Unknown")
 #' @import e1071
 #' @importFrom graphics hist
-#' 
+#'
 process.deviation.event <- function(x, snpm.data, correctionfactor, gender) {
   #Saving parameters for homozygous BAF
   minbaf <- c(0,0.1)
@@ -21,22 +21,22 @@ process.deviation.event <- function(x, snpm.data, correctionfactor, gender) {
 
   #Manipulating Allelic Imbalance to be Loss Of Heterozygosity
   ##Only called when no matching copy number variation was called
-  if(CNVType == "Allelic Imbalance"){
-    CNVType <- "LOH"
+  if(CNVType == "Allelic Imbalance"){       ##COMMENT: PUT TERM IN CONSTANTS.R
+    CNVType <- "LOH"                      ##COMMENT: PUT TERM IN CONSTANTS.R
   }
 
   #If event matches XY (male), reapply the start and stop to fully cover the XY area
-  #(Ref start/stop: HumanCytoSNP 850K; Illumina)
+  #(Ref start/stop: HumanCytoSNP 850K; Illumina) ###COMMENT: MOVE COMMENT ABOUT HUMANCYTOSNP 850K TO CONSTANTS.R FILE. KEEP GENERIC HERE.
   if(all(chr == "XY", gender == "Male")){
     start <- 0
-    stop <- as.integer(155270561)
-    if(CNVType == "Homozygous Copy Loss"){
-      CNVType <- "CN Loss"
+    stop <- as.integer(155270561)     ####COMMENT: CAN THIS NUMBER BE INCLUDED IN A CONSTANTS.R FILE? AS FULL_X_HUMANCYTOSNP850K.
+    if(CNVType == "Homozygous Copy Loss"){  ##COMMENT: PUT TERM IN CONSTANTS.R
+      CNVType <- "CN Loss"   ##COMMENT: PUT TERM IN CONSTANTS.R
     }
   }
 
   #Making of Output Chromosome Region (OCR)
-  OCR <- paste("chr",chr,":",formatC(start, big.mark = "."),"-",formatC(stop, big.mark = "."), sep = "")
+  OCR <- paste("chr",chr,":",formatC(start, big.mark = ","),"-",formatC(stop, big.mark = ","), sep = "")
 
   #Homozygous copy losses disturb the BAF signal
   if(CNVType == "Homozygous Copy Loss"){
@@ -54,37 +54,37 @@ process.deviation.event <- function(x, snpm.data, correctionfactor, gender) {
     df1 <- df1[with(df1, B.Allele.Freq >= max(minbaf) & B.Allele.Freq <= min(maxbaf)),]
     df1 <- df1[complete.cases(df1),]
 
-    #Check to control the amount of rows that remain
+    #Check to control the number of rows that remain
     if(any(nrow(df1) < 1,nrow(df1[df1$B.Allele.Freq > 0.5,]) <= 3, nrow(df1[df1$B.Allele.Freq < 0.5,]) <= 3)){
       #With deletions, its highly likely that all SNPs are filtered out because of a high percentage mosaicism
-      if(CNVType %in% c("CN Loss", "LOH")){
+      if(CNVType %in% c("CN Loss", "LOH")){                                                    ##COMMENT: PUT TERM IN CONSTANTS.R
         #Building of a percentage output: Number of Rows Top (NRT) and Number of Rows Bottom (NRB)
-        NRT <- paste("[>90/T.W.B.S.][",nrow(df1[df1$B.Allele.Freq > 0.5,]),"]", sep = "")
-        NRB <- paste("[>90/T.W.B.S.][",nrow(df1[df1$B.Allele.Freq < 0.5,]),"]", sep = "")
+        NRT <- paste("[>90/Too few usable SNPs][",nrow(df1[df1$B.Allele.Freq > 0.5,]),"]", sep = "")
+        NRB <- paste("[>90/Too few usable SNPs][",nrow(df1[df1$B.Allele.Freq < 0.5,]),"]", sep = "")
 
         #Make CNVType more clear
-        if(CNVType == "CN Loss"){
+        if(CNVType == "CN Loss"){   ##COMMENT: PUT TERM IN CONSTANTS.R
           CNVType <- "Deletion"
         }
         return(c(OCR,CNVType,"NA","NA",NRT,NRB,"NA","NA","NA","NA"))
       }
       else{
         #Else: there are not enough SNPs to accuratly calculate a percentage range
-        NRT <- paste("[T.W.B.S.][",nrow(df1[df1$B.Allele.Freq > 0.5,]),"]", sep = "")
-        NRB <- paste("[T.W.B.S.][",nrow(df1[df1$B.Allele.Freq < 0.5,]),"]", sep = "")
+        NRT <- paste("[Too few usable SNPs][",nrow(df1[df1$B.Allele.Freq > 0.5,]),"]", sep = "")
+        NRB <- paste("[Too few usable SNPs][",nrow(df1[df1$B.Allele.Freq < 0.5,]),"]", sep = "")
 
         #Make CNVType more clear
-        if(CNVType == "CN Gain"){
+        if(CNVType == "CN Gain"){   ##COMMENT: PUT TERM IN CONSTANTS.R
           CNVType <- "Duplication"
         }
-        if(CNVType == "High Copy Gain"){
+        if(CNVType == "High Copy Gain"){   ##COMMENT: PUT TERM IN CONSTANTS.R
           CNVType <- "Tetrasomy"
         }
         return(c(OCR,CNVType,"NA","NA",NRT,NRB,"NA","NA","NA","NA"))
       }
     }
     else {
-      #Splitsing the dataframe in 2 dataframes, one containing SNP with a BAF >0.5 and one <0.5 for outlier removing
+      #Splitting the dataframe in 2 dataframes, one containing SNP with a BAF >0.5 and one <0.5 for outlier removing
       df1 <- df1[complete.cases(df1),]
       df2 <- df1[df1$B.Allele.Freq > 0.5,]
       df1 <- df1[df1$B.Allele.Freq < 0.5,]
@@ -108,13 +108,13 @@ process.deviation.event <- function(x, snpm.data, correctionfactor, gender) {
       if(all(MeanOfMutation > 0.5, correctionfactor > 1)){
         equaldf$B.Allele.Freq <- equaldf$B.Allele.Freq / correctionfactor
       }
-      if(all(MeanOfMutation < 0.5,correctionfactor < 1)){
+      if(all(MeanOfMutation < 0.5, correctionfactor < 1)){
         equaldf$B.Allele.Freq <- equaldf$B.Allele.Freq / correctionfactor
       }
-      if(all(MeanOfMutation > 0.5,correctionfactor < 1)){
+      if(all(MeanOfMutation > 0.5, correctionfactor < 1)){
         equaldf$B.Allele.Freq <- equaldf$B.Allele.Freq * correctionfactor
       }
-      if(all(MeanOfMutation < 0.5,correctionfactor > 1)){
+      if(all(MeanOfMutation < 0.5, correctionfactor > 1)){
         equaldf$B.Allele.Freq <- equaldf$B.Allele.Freq * correctionfactor
       }
 
@@ -122,20 +122,20 @@ process.deviation.event <- function(x, snpm.data, correctionfactor, gender) {
       df2 <- equaldf[equaldf$B.Allele.Freq > 0.5,]
       df1 <- equaldf[equaldf$B.Allele.Freq < 0.5,]
 
-      #Create histogramms of the deviation
+      #Create histograms of the deviation
       #Create histogram CNVtype
-      if(CNVType == "CN Gain"){
+      if(CNVType == "CN Gain"){   ##COMMENT: PUT TERM IN CONSTANTS.R
         hCNVType <- "Duplication"
       }
-      if(CNVType == "CN Loss"){
+      if(CNVType == "CN Loss"){   ##COMMENT: PUT TERM IN CONSTANTS.R
         hCNVType <- "Deletion"
       }
-      if(CNVType == "High Copy Gain"){
+      if(CNVType == "High Copy Gain"){   ##COMMENT: PUT TERM IN CONSTANTS.R
         hCNVType <- "Tetrasomy"
       }
-      hist(equaldf$B.Allele.Freq, main = paste("[",chr,":",formatC(start, big.mark = "."),"-",formatC(stop, big.mark = ".")," ", hCNVType,"] [Combined BAF]", sep = ""), xlab = "BAF")
-      hist(df2$B.Allele.Freq, main = paste("[",chr,":",formatC(start, big.mark = "."),"-",formatC(stop, big.mark = ".")," ", hCNVType,"] [BAF > 0.5]", sep = ""), xlab = "BAF")
-      hist(df1$B.Allele.Freq, main = paste("[",chr,":",formatC(start, big.mark = "."),"-",formatC(stop, big.mark = ".")," ", hCNVType,"] [BAF < 0.5]", sep = ""), xlab = "BAF")
+      hist(equaldf$B.Allele.Freq, main = paste("[",chr,":",formatC(start, big.mark = ","),"-",formatC(stop, big.mark = ",")," ", hCNVType,"] [Combined BAF]", sep = ""), xlab = "BAF")
+      hist(df2$B.Allele.Freq, main = paste("[",chr,":",formatC(start, big.mark = ","),"-",formatC(stop, big.mark = ",")," ", hCNVType,"] [BAF > 0.5]", sep = ""), xlab = "BAF")
+      hist(df1$B.Allele.Freq, main = paste("[",chr,":",formatC(start, big.mark = ","),"-",formatC(stop, big.mark = ",")," ", hCNVType,"] [BAF < 0.5]", sep = ""), xlab = "BAF")
 
 
       #A high chanse occurs for memory leaks, apply gc()
@@ -161,7 +161,7 @@ process.deviation.event <- function(x, snpm.data, correctionfactor, gender) {
         equaltest <- "NA"
       }
 
-      #Apply tag "Good" (N.V. < 0.05) or "M.G." (N.V. >= 0.05) for the combined BAF of mutation
+      #Apply tag "Good" (N.V. < 0.05) or "M.G." (N.V. >= 0.05) for the combined BAF of mutation  ###COMMENT: ASK MARLOES WHAT M.G. MEANS####
       if(equaltest[1] >= 0.05){
         outputequaltest <- paste("[M.G]",equaltest[2],"[",equaltest[1],"]", sep = "")
       }
@@ -220,7 +220,7 @@ process.deviation.event <- function(x, snpm.data, correctionfactor, gender) {
       StatsLow95 <- c(mean(df1$B.Allele.Freq)-BI95L, mean(df1$B.Allele.Freq)+BI95L)
 
       #Applying the correct formula for the current event
-      if(CNVType == "CN Loss"){
+      if(CNVType == "CN Loss"){                                 ##COMMENT: PUT TERM IN CONSTANTS.R
         #Loading calculation for the BAF >0.5 for a deletion
         calcdel2 <- function(x){-279.71*x^2+609.65*x-232.73}
         #Loading calculation for the BAF <0.5 for a deletion
@@ -229,7 +229,7 @@ process.deviation.event <- function(x, snpm.data, correctionfactor, gender) {
         P95H <- c(round(calcdel2(min(StatsHigh95))), round(calcdel2(max(StatsHigh95))))
         P95L <- c(round(calcdel(min(StatsLow95))), round(calcdel(max(StatsLow95))))
       }
-      if(CNVType == "CN Gain"){
+      if(CNVType == "CN Gain"){     ##COMMENT: PUT TERM IN CONSTANTS.R
         #Loading calculation for the BAF >0.5 for a duplication
         calcdup2 <- function(x){1464*x^2-1118.2*x+193.99}
         #Loading calculation for the BAF <0.5 for a duplication
@@ -238,7 +238,7 @@ process.deviation.event <- function(x, snpm.data, correctionfactor, gender) {
         P95H <- c(round(calcdup2(min(StatsHigh95))), round(calcdup2(max(StatsHigh95))))
         P95L <- c(round(calcdup(min(StatsLow95))), round(calcdup(max(StatsLow95))))
       }
-      if(CNVType == "High Copy Gain"){
+      if(CNVType == "High Copy Gain"){    ##COMMENT: PUT TERM IN CONSTANTS.R
         #Loading calculation for the BAF >0.5 for a tetrasomy
         calctetra2 <- function(x){1118.8*x^2-1018.3*x+232.24}
         #Loading calculation for the BAF <0.5 for a tetrasomy
@@ -247,7 +247,7 @@ process.deviation.event <- function(x, snpm.data, correctionfactor, gender) {
         P95H <- c(round(calctetra2(min(StatsHigh95))), round(calctetra2(max(StatsHigh95))))
         P95L <- c(round(calctetra(min(StatsLow95))), round(calctetra(max(StatsLow95))))
       }
-      if(CNVType == "LOH"){
+      if(CNVType == "LOH"){                                           ##COMMENT: PUT TERM IN CONSTANTS.R
         #Loading calculation for the BAF >0.5 for a uniparental disomy event
         calchomo2 <- function(x){200*x-100}
         #Loading calculation for the BAF <0.5 for a uniparental disomy event
@@ -334,7 +334,7 @@ process.deviation.event <- function(x, snpm.data, correctionfactor, gender) {
         #Check whenever P > 0.5 has a normal distribution
         if(shapiro1[1] < 0.05){
           #Check if it's a deletion with a minimum percentage of 80
-          if(all(CNVType %in% c("CN Loss","LOH"),min(P95H) > 80)){
+          if(all(CNVType %in% c("CN Loss","LOH"),min(P95H) > 80)){    ##COMMENT: PUT TERM IN CONSTANTS.R
             OPT <- paste("[>",min(P95H),"][",nrow(df2),"]", sep = "")
           }
           else{
@@ -366,7 +366,7 @@ process.deviation.event <- function(x, snpm.data, correctionfactor, gender) {
         #Apply the same check for P < 0.5
         if(shapiro2[1] < 0.05){
           #Check whenever it's a deletion with a minimum percentage of 80
-          if(all(min(P95L) > 80, CNVType %in% c("CN Loss","LOH"))){
+          if(all(min(P95L) > 80, CNVType %in% c("CN Loss","LOH"))){      ##COMMENT: PUT TERM IN CONSTANTS.R
             OPB <- paste("[>",min(P95L),"][",nrow(df1),"]", sep = "")
           }
           else{
@@ -404,13 +404,13 @@ process.deviation.event <- function(x, snpm.data, correctionfactor, gender) {
         }
 
         #Make CNV Type more clear
-        if (CNVType == "CN Gain") {
+        if (CNVType == "CN Gain") {   ##COMMENT: PUT TERM IN CONSTANTS.R
           CNVType <- "Duplication"
         }
-        if (CNVType == "CN Loss") {
+        if (CNVType == "CN Loss") {   ##COMMENT: PUT TERM IN CONSTANTS.R
           CNVType <- "Deletion"
         }
-        if (CNVType == "High Copy Gain") {
+        if (CNVType == "High Copy Gain") {   ##COMMENT: PUT TERM IN CONSTANTS.R
           CNVType <- "Tetrasomy"
         }
 
@@ -440,7 +440,7 @@ process.deviation.line <- function(x, gender) {
   temp <- apply(events, 1, function(x){strsplit(x[1], ":")[[1]]})
   temp <- data.frame(matrix(unlist(temp), nrow = length(temp) / 2, byrow = T), stringsAsFactors = F)
 
-  #Splitsing of the start and stop
+  #Splitting of the start and stop
   temp2 <- apply(temp,1,function(x){strsplit(x[2], "-")[[1]]})
   temp2 <- data.frame(matrix(unlist(temp2), nrow = length(temp2) / 2, byrow = T), stringsAsFactors = F)
 
@@ -454,15 +454,15 @@ process.deviation.line <- function(x, gender) {
     #Only the PAR areas are heterozygous, which are marked XY
     events$Chr <- gsub("Y|X","XY",events$Chr)
     #Removing allelic imbalance calls
-    events[with(events, Chr == "XY" & Event %in% c("LOH","Allelic Imbalance")),] <- NA
+    events[with(events, Chr == "XY" & Event %in% c("LOH","Allelic Imbalance")),] <- NA            ##COMMENT: PUT TERM IN CONSTANTS.R
     events <- events[complete.cases(events),]
     #If more than 1 event remains, only the first one will be used specifically
     if(nrow(events[events$Chr == "XY",]) > 1){
       events <- rbind(events[events$Chr != "XY",],events[events$Chr == "XY",][1,])
     }
     if(nrow(events[events$Chr == "XY",]) == 1){
-      events[events$Chr == "XY",][,5] <- 100001
-      events[events$Chr == "XY",][,6] <- 11
+      events[events$Chr == "XY",][,5] <- 100001   #ASK MARLOES WHERE THIS NUMBER COMES FROM. START PAR1?
+      events[events$Chr == "XY",][,6] <- 11       #ASK MARLOES WHERE THIS NUMBER COMBES FROM.
     }
   }
   if(gender == "Female"){
