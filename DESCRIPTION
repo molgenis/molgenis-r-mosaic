@@ -9,10 +9,10 @@ Authors@R: as.person(c(
   ))
 Maintainer: Connor Stroomberg <c.stroomberg@rug.nl>
 Description: Calculates mosaic percentage.
-License: GNU Lesser General Public License
+License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 Imports:
   grDevices,
   graphics,

@@ -7,7 +7,7 @@
 MosaicCalculator(exp.nr, gender, snpm.data, deviations, outfile)
 }
 \arguments{
-\item{exp.nr}{numbarical experiment number}
+\item{exp.nr}{numerical experiment number}
 
 \item{gender}{string denoting gender
 ( "Male", "Female" or "Unknown")}
