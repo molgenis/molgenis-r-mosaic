@@ -19,6 +19,7 @@
 #' @import gridExtra
 #' @importFrom utils read.table setTxtProgressBar txtProgressBar
 #' @importFrom graphics plot text
+#' @importFrom qpdf pdf_combine
 #' @export
 #'
 #Versionnumber: 0.6.0.0
@@ -100,19 +101,21 @@ MosaicCalculator <- function(exp.nr, gender, snpm.data, deviations, outfile){
   cat(line1, "\n")
   cat("Busy filtering and calculating the remaining events, please wait ...","\n")
 
-  #Turn on the graphical PDF output
-  if ( missing(outfile)) {
-    pdf("~/result.pdf")
-  } else {
-    pdf(outfile)
-  }
+  #Set pdf output to plots file for event histograms
+  pdf("./plots.pdf")
 
   #Function that uses the remaining events to manipulate the SNP-array data
   eventsfilter <- apply(eventsoutput, 1, function(x) {
     process.deviation.event(x, snpm.data, correctionfactor, gender)
   })
   remove(eventsoutput)
+  
+  #End event histogram plotting
+  dev.off()
 
+  
+  #Set pdf output to desc file for mosaic result text description
+  pdf("./desc.pdf")
   #Reset eventsfilter to vertical dataframe
   eventsfilter <- data.frame(matrix(unlist(eventsfilter), nrow = length(eventsfilter)/10, byrow = T), stringsAsFactors = F)
 
@@ -136,7 +139,12 @@ MosaicCalculator <- function(exp.nr, gender, snpm.data, deviations, outfile){
   result.lines <- c(result.lines, c("Correction factor: ", correctionfactor))
   result.lines <- c(result.lines, "")
   OutputToPdf(cat(result.lines, sep = "\n" ))
+  #End mosaic result text description
+  dev.off()
 
+  #Set pdf output to table file mosaic summary table data
+  pdf("./table.pdf")
+  
   # Scale down the font size to make the table fix A4
   eventsfilter.theme <- gridExtra::ttheme_default(
     core = list(fg_params=list(cex = 0.4)),
@@ -147,10 +155,24 @@ MosaicCalculator <- function(exp.nr, gender, snpm.data, deviations, outfile){
   grb <- tableGrob(eventsfilter, cols = cols, rows = NULL, theme = eventsfilter.theme)
   grid.arrange(grb)
 
-  #Turn off the graphical PDF output
+  #End mosaic summary table
   dev.off()
 
-  #Clearing the memory of junk
+  # Use defualt if no output file is given
+  if ( missing(outfile)) {
+   combinedOutput <- "~/result.pdf"
+  } else {
+   combinedOutput <- outfile
+  }
+  
+  # Combine mosaic analysis into single pdf file
+  pdf_combine(c("./table.pdf", "./desc.pdf", "./plots.pdf"), output = outfile)
+  # Clearup intermedete pdf files
+  RemoveIfExists("./table.pdf")
+  RemoveIfExists("./desc.pdf")
+  RemoveIfExists("./plots.pdf")
+
+  # Clearing the memory of junk
   suppressMessages(gc())
 
   #Returning the final dataframe

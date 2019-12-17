@@ -20,6 +20,7 @@ Imports:
   utils,
   e1071,
   grid,
-  gridExtra
+  gridExtra,
+  qpdf
 Suggests: 
     testthat

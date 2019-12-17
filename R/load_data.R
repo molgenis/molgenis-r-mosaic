@@ -29,7 +29,7 @@ run.demo <- function() {
   deviations <- read.table(deviations.file, header = T, sep = "\t")
 
   cat("Run analysis","\n")
-  events.filter <- MosaicCalculator(exp.nr, gender, snpm.data, deviations, "~/mosaic-result.pdf")  ##COMMENT CAN THIS BE CHANGES TO NAME FILE AND SELECT LOCATION?
+  events.filter <- MosaicCalculator(exp.nr, gender, snpm.data, deviations, "./mosaic-result.pdf")  ##COMMENT CAN THIS BE CHANGES TO NAME FILE AND SELECT LOCATION?
   print(events.filter)
 
   cat("Done","\n")
