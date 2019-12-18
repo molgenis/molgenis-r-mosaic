@@ -158,7 +158,7 @@ MosaicCalculator <- function(exp.nr, gender, snpm.data, deviations, outfile){
   #End mosaic summary table
   dev.off()
 
-  # Use defualt if no output file is given
+  # Use default if no output file is given
   if ( missing(outfile)) {
    combinedOutput <- "~/result.pdf"
   } else {
