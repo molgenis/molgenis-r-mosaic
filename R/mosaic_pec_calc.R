@@ -12,7 +12,7 @@
 #' ( "Chromosome Region",	"Event",	"Length",	"Cytoband",	precentage of CNV Overlap",
 #' 	"Probe Median",	"precentage Heterozygous",	"Probes",	"Count of Gene Symbols")
 #' @param outfile optional path to direct pdf output to, if not set './Rplots.pdf' is used
-#' @import e1071 #To enable skewness calculations
+#' @import e1071
 #' @import stats
 #' @import grDevices
 #' @import grid

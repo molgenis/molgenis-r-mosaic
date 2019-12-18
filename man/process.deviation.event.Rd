@@ -11,7 +11,7 @@ process.deviation.event(x, snpm.data, correctionfactor, gender)
 
 \item{snpm.data}{dataframe containing the BAF's}
 
-\item{correctionfactor}{number used in proceing the event}
+\item{correctionfactor}{number used in processing the event}
 
 \item{gender}{string denoting gender
 ( "Male", "Female" or "Unknown")}
