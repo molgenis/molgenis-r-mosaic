@@ -34,7 +34,7 @@ pipeline {
                 sh "git fetch --tags"
                 container('r') {
                     sh "Rscript -e \"git2r::config(user.email = 'molgenis+ci@gmail.com', user.name = 'MOLGENIS Jenkins')\""
-                    sh "Rscript -e \"install.packages(c('e1071','gridExtra'), repos='https://registry.molgenis.org/repository/R')\""
+                    sh "Rscript -e \"install.packages(c('e1071','gridExtra', 'qpdf'), repos='https://registry.molgenis.org/repository/R')\""
                 }
             }
         }

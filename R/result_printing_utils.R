@@ -15,3 +15,17 @@ OutputToPdf <- function(output, cex = 0.7) {
   text(0, 1, paste(tmp, collapse='\n'), adj = c(0,1), family = 'mono', cex = cex)
   box()
 }
+
+#' RemoveIfExists
+#' 
+#' Helper that removes file if it exsits
+#' 
+#' @param file file name including path to be removed
+#'    
+RemoveIfExists <- function(file) {
+  #Check its existence
+  if (file.exists(file)) {
+    #Delete file if it exists
+    file.remove(file)
+  }
+}
