@@ -2,12 +2,22 @@
 % Please edit documentation in R/load_data.R
 \name{run.demo}
 \alias{run.demo}
-\title{Run demo using expr number 1 and male = gender
-Asks for file to be selected}
+\title{Runner script to try out MosaicCalculator}
 \usage{
-run.demo()
+run.demo(
+  experiment_number = 1,
+  gender = "Male",
+  results_path = "./mosaic-result.pdf"
+)
+}
+\arguments{
+\item{experiment_number}{number used for tracking experiment.}
+
+\item{gender}{string one of (Male, Female or Unknown).}
+
+\item{results_path}{string path and file name of pdf file contaiing results}
 }
 \description{
-Run demo using expr number 1 and male = gender
+Run demo defaults to using using experiment_number 1, gender "Male" and results_path "./mosaic-result.pdf"
 Asks for file to be selected
 }
